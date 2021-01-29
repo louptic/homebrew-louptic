@@ -1,0 +1,37 @@
+# Updates a Formula
+# Triggers on Repository Dispatch
+# Hosts the Formula on github-actions and on master
+
+on: 
+  repository_dispatch: # https://github.com/peter-evans/repository-dispatch#readme
+    types: [version-update]
+
+env: 
+  packageName: "@useoptic/cli"
+  exportName: Api # must be capitalized since ruby classes are capitalized
+  cleanedPkgName: useopticcli # just remove all special characters and make lowercase (no @s or /s)
+
+jobs:
+  # I don't believe anything here requires MacOS (go-task has other installation options) and this could be
+  # converted later to another runner if desired.
+  update-formula:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: brew install go-task/tap/go-task
+      - name: Create Formula
+        - run: task generate-formula
+        - run: git config --local user.email "action@github.com"
+        - run: git add Formula/${{ env.exportName }}.rb
+        - run: git config --local user.name "GitHub Package Updater"
+        - run: git commit -m "Updated Formula"
+        - name: Push changes
+          uses: ad-m/github-push-action@master
+          with:
+              github_token: ${{ secrets.GITHUB_TOKEN }}
+              branch: master

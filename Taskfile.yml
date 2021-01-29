@@ -1,0 +1,37 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  # We can parameterize the npm repo if necessary, right now we assume everything comes from published stable as truth.
+  VERSION: $(npm view @useoptic/cli version)
+  URL: $(npm view @useoptic/cli dist.tarball)
+  SHASUM: $(curl -s  {{.URL}} | sha256sum | awk '{print $1}')
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+  get-stats:
+    desc: "[DIAG] show the current version of Optic CLI"
+    cmds:
+      - "echo \"Version : {{.VERSION}} \""
+      - "echo \"SHA256  : {{.SHASUM}} \""
+      - "echo \"URL     : {{.URL}} \""
+    silent: true
+  create-formula-dir:
+    cmds:
+      - "mkdir Formula"
+    status:
+      - "test -d Formula"
+    silent: true
+  generate-formula:
+    # Always run - it's cheap. We can compare npm package shasum to formula shasum if 
+    # opinions change on that.
+    desc: "Generates a new Api formula based on the latest NPM package"
+    deps: [ create-formula-dir ]
+    cmds:
+      - "sed -e 's|{URL}|{{.URL}}|g' \
+        -e 's|{SHASUM}|{{.SHASUM}}|g' \
+        Api-template.rb > Formula/Api.rb"
