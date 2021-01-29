@@ -6,7 +6,7 @@ vars:
   # We can parameterize the npm repo if necessary, right now we assume everything comes from published stable as truth.
   VERSION: $(npm view @useoptic/cli version)
   URL: $(npm view @useoptic/cli dist.tarball)
-  SHASUM: $(curl -s  {{.URL}} | sha256sum | awk '{print $1}')
+  SHASUM: $(curl -s  {{.URL}} | shasum -a 256 | awk '{print $1}')
 
 tasks:
   default:
