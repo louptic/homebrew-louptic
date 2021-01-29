@@ -9,7 +9,7 @@ on:
 
 env: 
   packageName: "@useoptic/cli"
-  exportName: Api # must be capitalized since ruby classes are capitalized
+  exportName: api # must be capitalized since ruby classes are capitalized
   cleanedPkgName: useopticcli # just remove all special characters and make lowercase (no @s or /s)
 
 jobs:
