@@ -5,6 +5,7 @@
 on: 
   repository_dispatch: # https://github.com/peter-evans/repository-dispatch#readme
     types: [version-update]
+  workflow_dispatch:
 
 env: 
   packageName: "@useoptic/cli"
