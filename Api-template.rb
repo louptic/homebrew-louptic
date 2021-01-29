@@ -17,7 +17,7 @@ class Api < Formula
     system "npm", "install", *Language::Node.std_npm_install_args(libexec)
 
     # Set shebang to Homebrew cellar
-    cellar_location = shell_output("brew --prefix node").strip
+    cellar_location = %x[brew --prefix node]
     puts path
     lines = IO.readlines(path)
     lines[0] = "#! #{cellar_location}/bin/node"
