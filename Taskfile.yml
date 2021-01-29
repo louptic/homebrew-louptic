@@ -34,4 +34,4 @@ tasks:
     cmds:
       - "sed -e 's|{URL}|{{.URL}}|g' \
         -e 's|{SHASUM}|{{.SHASUM}}|g' \
-        Api-template.rb > Formula/Api.rb"
+        api-template.rb > Formula/api.rb"
