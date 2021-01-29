@@ -17,12 +17,11 @@ class Api < Formula
     system "npm", "install", *Language::Node.std_npm_install_args(libexec)
 
     # Set shebang to Homebrew cellar
-    cellar_location = %x[brew --prefix node]
     puts path
     lines = IO.readlines(path)
-    lines[0] = "#! #{cellar_location}/bin/node"
+    lines[0] = "#! #{HOMEBREW_PREFIX}/opt/node"
     puts "#{HOMEBREW_PREFIX}"
-    puts "#! #{cellar_location}/bin/node"
+    puts "#! #{HOMEBREW_PREFIX}/opt/node"
     File.open(path, 'w') do |file|
       file.puts lines
     end
