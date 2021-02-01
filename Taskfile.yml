@@ -59,6 +59,7 @@ tasks:
     desc: "[SRV] commits a change to the local repository (required for brew test, which clones the repo)"
     deps: [ generate-formula ]
     cmds:
+      - git add Formula/api.rb
       - git -c user.email=action@github.com -c user.name='GitHub Package Updater' commit -m 'Updated Formula'
 
   brew-test:
