@@ -55,9 +55,15 @@ tasks:
     cmds: 
       - brew audit --strict --online --formula Formula/api.rb
 
+  brew-commit:
+    desc: "[SRV] commits a change to the local repository (required for brew test, which clones the repo)"
+    deps: [ generate-formula ]
+    cmds:
+      - git -c user.email=action@github.com -c user.name='GitHub Package Updater' commit -m 'Updated Formula'
+
   brew-test:
     desc: "[SRV] Runs `brew test` for the local package"
-    deps: [ generate-formula ]
+    deps: [ generate-formula, brew-commit ]
     cmds: 
       - brew test Formula/api.rb
 
@@ -68,4 +74,5 @@ tasks:
       - task: clean
       - task: generate-formula
       - task: brew-audit
+      - task: brew-commit
       - task: brew-test
