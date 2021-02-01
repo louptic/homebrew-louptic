@@ -55,23 +55,25 @@ tasks:
     desc: "[SRV] Audits formula for best practices"
     deps: [ generate-formula ]
     cmds: 
-      - brew audit --strict --online --formula Formula/api.rb
+      - brew audit --strict --online --formula ./Formula/api.rb
     silent: true
 
   brew-commit:
     desc: "[SRV] commits a change to the local repository (required for brew test, which clones the repo)"
     cmds:
-      - git add Formula/api.rb
+      - git add .
       - git -c user.email=action@github.com -c user.name='GitHub Package Updater' commit -m 'Updated Formula'
     status:
-      - "[ -n \"$(git status --porcelain)\" ]"
+      - "! [ -n \"$(git status --porcelain)\" ]"
     silent: true
 
   brew-test:
     desc: "[SRV] Runs `brew test` for the local package"
     deps: [ generate-formula, brew-commit ]
     cmds: 
-      - brew test Formula/api.rb
+      - brew tap optictest/apitest .
+      - brew test --verbose optictest/apitest
+      - brew untap optictest/apitest
     silent: true
 
   # Build - builds and validates a formula for the latest version available on NPM
@@ -83,4 +85,3 @@ tasks:
       - task: brew-audit
       - task: brew-test
     silent: true
-    
