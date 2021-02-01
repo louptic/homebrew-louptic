@@ -26,6 +26,7 @@ tasks:
   clean:
     cmds:
       - rm -f Formula/api.rb
+    silent: true
 
   # Diagnostics
   get-stats:
@@ -48,27 +49,30 @@ tasks:
       - "sed -e 's|{URL}|{{.URL}}|g' \
         -e 's|{SHASUM}|{{.SHASUM}}|g' \
         api-template.rb > Formula/api.rb"
+    silent: true
 
   brew-audit:
     desc: "[SRV] Audits formula for best practices"
     deps: [ generate-formula ]
     cmds: 
       - brew audit --strict --online --formula Formula/api.rb
+    silent: true
 
   brew-commit:
     desc: "[SRV] commits a change to the local repository (required for brew test, which clones the repo)"
-    deps: [ generate-formula ]
     cmds:
       - git add Formula/api.rb
       - git -c user.email=action@github.com -c user.name='GitHub Package Updater' commit -m 'Updated Formula'
     status:
-      - [ -n "$(git status --porcelain)" ]  
+      - "[ -n \"$(git status --porcelain)\" ]"
+    silent: true
 
   brew-test:
     desc: "[SRV] Runs `brew test` for the local package"
     deps: [ generate-formula, brew-commit ]
     cmds: 
       - brew test Formula/api.rb
+    silent: true
 
   # Build - builds and validates a formula for the latest version available on NPM
   build:
@@ -78,3 +82,5 @@ tasks:
       - task: generate-formula
       - task: brew-audit
       - task: brew-test
+    silent: true
+    
