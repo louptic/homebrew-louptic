@@ -61,6 +61,8 @@ tasks:
     cmds:
       - git add Formula/api.rb
       - git -c user.email=action@github.com -c user.name='GitHub Package Updater' commit -m 'Updated Formula'
+    status:
+      - [ -n "$(git status --porcelain)" ]  
 
   brew-test:
     desc: "[SRV] Runs `brew test` for the local package"
@@ -75,5 +77,4 @@ tasks:
       - task: clean
       - task: generate-formula
       - task: brew-audit
-      - task: brew-commit
       - task: brew-test
