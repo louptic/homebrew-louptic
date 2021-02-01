@@ -74,6 +74,7 @@ tasks:
       - brew tap optictest/apitest .
       - brew install optictest/apitest/api
       - brew test --verbose optictest/apitest/api
+      - brew uninstall optictest/apitest/api
       - brew untap optictest/apitest
     silent: true
 
