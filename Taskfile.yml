@@ -72,7 +72,7 @@ tasks:
     deps: [ generate-formula, brew-commit ]
     cmds: 
       - brew tap optictest/apitest .
-      - brew test --verbose optictest/apitest/api
+      - brew test --verbose api
       - brew untap optictest/apitest
     silent: true
 
