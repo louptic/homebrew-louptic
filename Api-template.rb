@@ -1,7 +1,7 @@
 require "language/node"
 
 class Api < Formula
-  desc "The Optic CLI"
+  desc "Optic CLI"
   homepage "https://github.com/opticdev/optic"
   url "{URL}"
   sha256 "{SHASUM}"

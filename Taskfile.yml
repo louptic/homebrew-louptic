@@ -1,4 +1,5 @@
 # https://taskfile.dev
+# We assume NPM is available on the system where taskfile is run. NPM is the source of packagey truth
 
 version: '3'
 
@@ -9,29 +10,62 @@ vars:
   SHASUM: $(curl -s  {{.URL}} | shasum -a 256 | awk '{print $1}')
 
 tasks:
+  # Default - usage
   default:
     cmds:
       - task --list
     silent: true
-  get-stats:
-    desc: "[DIAG] show the current version of Optic CLI"
-    cmds:
-      - "echo \"Version : {{.VERSION}} \""
-      - "echo \"SHA256  : {{.SHASUM}} \""
-      - "echo \"URL     : {{.URL}} \""
-    silent: true
+
+  # Supporting tasks
   create-formula-dir:
     cmds:
       - "mkdir Formula"
     status:
       - "test -d Formula"
     silent: true
+  clean:
+    cmds:
+      - rm -f Formula/api.rb
+
+  # Diagnostics
+  get-stats:
+    desc: "[DIAG] show the current version of Optic CLI"
+    cmds:
+      - "echo \"Version      : {{.VERSION}} \""
+      - "echo \"SHA256       : {{.SHASUM}} \""
+      - "echo \"URL          : {{.URL}} \""
+    silent: true
+
+  # Service tasks - These do "a thing", but you probably want a full-featured task
   generate-formula:
-    # Always run - it's cheap. We can compare npm package shasum to formula shasum if 
-    # opinions change on that.
-    desc: "Generates a new Api formula based on the latest NPM package"
+    desc: "[SRV] Generates a new api formula based on the latest NPM package"
     deps: [ create-formula-dir ]
+    sources: 
+      - api-template.rb
+    generates:
+      - Formula/api.rb
     cmds:
       - "sed -e 's|{URL}|{{.URL}}|g' \
         -e 's|{SHASUM}|{{.SHASUM}}|g' \
         api-template.rb > Formula/api.rb"
+
+  brew-audit:
+    desc: "[SRV] Audits formula for best practices"
+    deps: [ generate-formula ]
+    cmds: 
+      - brew audit --strict --online --formula Formula/api.rb
+
+  brew-test:
+    desc: "[SRV] Runs `brew test` for the local package"
+    deps: [ generate-formula ]
+    cmds: 
+      - brew test Formula/api.rb
+
+  # Build - builds and validates a formula for the latest version available on NPM
+  build:
+    desc: "Builds a new brew formula from scratch and runs audit, test to validate it"
+    cmds:
+      - task: clean
+      - task: generate-formula
+      - task: brew-audit
+      - task: brew-test

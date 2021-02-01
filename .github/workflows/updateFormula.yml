@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: 12
       - run: brew install go-task/tap/go-task
-      - run: task generate-formula
+      - run: task build
       - run: git config --local user.email "action@github.com"
       - run: git add Formula/${{ env.exportName }}.rb
       - run: git config --local user.name "GitHub Package Updater"
