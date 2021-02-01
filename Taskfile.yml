@@ -68,6 +68,9 @@ tasks:
     silent: true
 
   brew-test:
+    # This needs to check for an existing tap definition and remove it (or force the new tap).
+    # In CI this doesn't matter much, but locally an existing test tap will break local testing.
+    # Untap should 
     desc: "[SRV] Runs `brew test` for the local package"
     deps: [ generate-formula, brew-commit ]
     cmds: 
